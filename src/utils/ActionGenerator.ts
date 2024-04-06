@@ -30,7 +30,8 @@ export const generateAction = (name: string, type: string, interfaceName: string
 export const generateActions = (model: string[], interfaceName: string):string => {
     model = model.map(i => i.replace("?", ""))
     const result:string[] = []
-    result.push(`import { ${interfaceName} } from "../reducers/${interfaceName.slice(1)}Reducer"`)
+    result.push(`import { ${interfaceName}Action } from "../reducers/${interfaceName.slice(1)}Reducer"`)
+    result.push(`import { ${interfaceName} } from "../models/${interfaceName.slice(1)}"`)
     result.push("")
     model.forEach(attr => {
         const name = getActionName(attr.split(":")[0])
@@ -43,7 +44,7 @@ export const generateActions = (model: string[], interfaceName: string):string =
         result.push(generateAction(attr.split(":")[0], attr.split(":")[1], interfaceName))
     })
     result.push(`export const setFull${interfaceName.slice(1)} = (dispatch: React.Dispatch<${interfaceName}Action>, ${interfaceName[1].toLowerCase()}${interfaceName.slice(2)}: ${interfaceName}) => {`)
-    result.push(`\tdispatch({type: ${getActionName("full" + interfaceName.slice(1))}}, payload: { ...${interfaceName[1].toLowerCase()}${interfaceName.slice(2)}})`)
+    result.push(`\tdispatch({type: ${getActionName("full" + interfaceName.slice(1))}, payload: { ...${interfaceName[1].toLowerCase()}${interfaceName.slice(2)}}})`)
     result.push("}")
     return result.join("\n")
 }

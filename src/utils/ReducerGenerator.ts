@@ -15,6 +15,7 @@ export const generateReducer = (model: string[], interfaceName: string):string =
     const result:string[] = []
 
     result.push(`import { ${model.map(i => getActionName(i.split(":")[0])).join(", ")} , ${getActionName("full" + interfaceName.slice(1))} } from "../actions/${interfaceName.slice(1)}Actions.ts"`)
+    result.push(`import { ${interfaceName} } from "../models/${interfaceName.slice(1)}"`)
 
     result.push(`export interface ${interfaceName}State extends ${interfaceName} {`)
     result.push("}")
