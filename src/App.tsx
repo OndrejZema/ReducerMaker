@@ -7,10 +7,11 @@ import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { Notification } from "./Notification";
 
 function App() {
-  const [model, setModel] = React.useState<string>("");
+  const [model, setModel] = React.useState<string>("export interface IType{\n}");
   const [reducer, setReducer] = React.useState<string>("");
   const [actions, setActions] = React.useState<string>("");
-  const [showNotification, setShowNotification] = React.useState<boolean>(false)
+  const [showNotification, setShowNotification] =
+    React.useState<boolean>(false);
 
   React.useEffect(() => {
     const re =
@@ -32,7 +33,7 @@ function App() {
           lines = origLines.slice(index);
         }
       });
-      lines = lines.filter((i) => i !== "" && !i.includes("?"));
+      lines = lines.filter((i) => i !== "");
       interfaceName = lines[0].split(" ")[2].replace("{", "").trim();
       modelAttrs = lines.slice(1, -1).map((i) => i.trim());
       setReducer(generateReducer(modelAttrs, interfaceName));
@@ -43,49 +44,79 @@ function App() {
   }, [model]);
 
   const handleCopy = (text: string) => {
-    setShowNotification(true)
-    setTimeout(()=>{setShowNotification(false)}, 3000)
-    navigator.clipboard.writeText(text)
-  }
+    setShowNotification(true);
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+    navigator.clipboard.writeText(text);
+  };
 
   return (
-    <div className="d-flex flex-column h-100 my-3">
-      <Notification icon="🥳" title="Success" onHide={()=>{setShowNotification(false)}} show={showNotification} text="The text was successfully copied to clip board"/>
-      <div className="flex-1 h-100">
-        <h2 className="d-flex justify-content-center">Model</h2>
-        <textarea
-          rows={20}
-          className="w-100 font-mono"
-          spellCheck={false}
-          value={model}
-          onChange={(e) => setModel(e.target.value)}
+    <div className="d-flex justify-content-center">
+      <div className="d-flex flex-column h-100 my-3 container">
+        <Notification
+          icon="🥳"
+          title="Success"
+          onHide={() => {
+            setShowNotification(false);
+          }}
+          show={showNotification}
+          text="The text was successfully copied to clip board"
         />
-      </div>
-      <div className="flex-1 h-100">
-        <h2 className="mb-0 d-flex justify-content-center">Reducer</h2>
-        <div className="d-flex justify-content-end">
-          <button onClick={()=>{handleCopy(reducer)}}>📋 Copy</button>
+        <div className="flex-1 h-100">
+          <h2 className="d-flex justify-content-center">Model</h2>
+          <textarea
+            rows={20}
+            className="w-100 font-mono"
+            spellCheck={false}
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+          />
         </div>
-        <SyntaxHighlighter
-          className="flex-1 h-100"
-          language="typescript"
-          style={docco}
-        >
-          {reducer}
-        </SyntaxHighlighter>
-      </div>
-      <div className="flex-1 h-100">
-        <h2 className="mb-0 d-flex justify-content-center">Actions</h2>
-        <div className="d-flex justify-content-end">
-          <button onClick={()=>{handleCopy(actions)}}>📋 Copy</button>
-        </div>
-        <SyntaxHighlighter
-          className="flex-1 h-100"
-          language="typescript"
-          style={docco}
-        >
-          {actions}
-        </SyntaxHighlighter>
+        {reducer !== "" && actions !== "" ? (
+          <>
+            <div className="flex-1 h-100">
+              <h2 className="mb-0 d-flex justify-content-center">Reducer</h2>
+              <div className="d-flex justify-content-end">
+                <button
+                  onClick={() => {
+                    handleCopy(reducer);
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+              <SyntaxHighlighter
+                className="flex-1 h-100"
+                language="typescript"
+                style={docco}
+              >
+                {reducer}
+              </SyntaxHighlighter>
+            </div>
+            <div className="flex-1 h-100">
+              <h2 className="mb-0 d-flex justify-content-center">Actions</h2>
+              <div className="d-flex justify-content-end">
+                <button
+                  onClick={() => {
+                    handleCopy(actions);
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+              <SyntaxHighlighter
+                className="flex-1 h-100"
+                language="typescript"
+                style={docco}
+              >
+                {actions}
+              </SyntaxHighlighter>
+            </div>{" "}
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

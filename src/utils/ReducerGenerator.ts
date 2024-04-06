@@ -11,6 +11,7 @@ const getDefaultValue = (type: string):string => {
 }
 
 export const generateReducer = (model: string[], interfaceName: string):string => {
+    model = model.map(i => i.replace("?", ""))
     const result:string[] = []
 
     result.push(`import { ${model.map(i => getActionName(i.split(":")[0])).join(", ")} , ${getActionName("full" + interfaceName.slice(1))} } from "../actions/${interfaceName.slice(1)}Actions.ts"`)
